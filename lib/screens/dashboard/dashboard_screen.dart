@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/sticker_provider.dart';
 import '../../utils/rewards_data.dart';
 import '../../widgets/stat_card.dart';
+import '../../providers/theme_provider.dart';
+import '../../core/responsive/responsive.dart';
+import '../../core/theme/app_colors.dart';
 
 class DashboardScreen extends ConsumerWidget {
 
@@ -55,12 +58,40 @@ class DashboardScreen extends ConsumerWidget {
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text("Álbum Mundial ⚽"),
+
+    title: const Text("Álbum Mundial Figuritas ⚽"),
+
+    actions: [
+
+    IconButton(
+
+      onPressed: () {
+
+        ref
+            .read(themeProvider.notifier)
+            .toggleTheme();
+
+      },
+
+      icon: Icon(
+
+        Theme.of(context).brightness ==
+                Brightness.dark
+
+            ? Icons.light_mode
+
+            : Icons.dark_mode,
       ),
+    ),
+
+  ],
+), 
 
       body: SingleChildScrollView(
 
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(
+          Responsive.padding(context),
+        ),
 
         child: Column(
 
@@ -75,6 +106,7 @@ class DashboardScreen extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 34,
                 fontWeight: FontWeight.bold,
+                color: Color.fromARGB(179, 64, 129, 3),
               ),
             ),
 
@@ -94,8 +126,8 @@ class DashboardScreen extends ConsumerWidget {
 
             Text(
               "${(progress * 100).toStringAsFixed(1)}% completado",
-              style: const TextStyle(
-                color: Colors.white70,
+              style: TextStyle(
+                color: AppColors.textSecondary(context),
                 fontSize: 16,
               ),
             ),
@@ -152,12 +184,14 @@ class DashboardScreen extends ConsumerWidget {
 
   int _getCrossAxisCount(BuildContext context) {
 
-    final width = MediaQuery.of(context).size.width;
-
-    if (width < 700) {
+      if (Responsive.isMobile(context)) {
       return 2;
-    } else {
-      return 4;
     }
+
+    if (Responsive.isTablet(context)) {
+      return 2;
+    }
+
+  return 4;
   }
 }

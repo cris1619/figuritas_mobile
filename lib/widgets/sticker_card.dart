@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../core/theme/app_colors.dart';
+
 class StickerCard extends StatelessWidget {
 
   final int number;
@@ -16,81 +18,84 @@ class StickerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return InkWell(
+    return Material(
 
-      borderRadius: BorderRadius.circular(18),
+      color: Colors.transparent,
 
-      onTap: onTap,
+      child: InkWell(
 
-      child: AnimatedContainer(
+        borderRadius: BorderRadius.circular(16),
 
-        duration: const Duration(milliseconds: 250),
+        onTap: onTap,
 
-        decoration: BoxDecoration(
+        child: AnimatedContainer(
 
-          color: obtained
-              ? const Color(0xFF22C55E)
-              : const Color(0xFF1E293B),
+          duration: const Duration(milliseconds: 180),
 
-          borderRadius: BorderRadius.circular(18),
+          decoration: BoxDecoration(
 
-          border: Border.all(
             color: obtained
-                ? Colors.greenAccent
-                : Colors.white12,
-            width: 1.5,
+                ? Colors.green
+                : AppColors.stickerInactive(context),
+
+            borderRadius:
+                BorderRadius.circular(16),
+
+            border: Border.all(
+
+              color: obtained
+                  ? Colors.greenAccent
+                  : Colors.black12,
+            ),
           ),
 
-          boxShadow: [
+          child: Stack(
 
-            if (obtained)
-              BoxShadow(
-                color: Colors.green.withOpacity(0.35),
-                blurRadius: 12,
-                spreadRadius: 1,
-              ),
+            children: [
 
-          ],
-        ),
+              Positioned(
 
-        child: Stack(
+                top: 6,
+                right: 6,
 
-          children: [
+                child: Icon(
 
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Icon(
-                obtained
-                    ? Icons.check_circle
-                    : Icons.circle_outlined,
+                  obtained
+                      ? Icons.check_circle
+                      : Icons.circle_outlined,
 
-                color: obtained
-                    ? Colors.white
-                    : Colors.white24,
-
-                size: 18,
-              ),
-            ),
-
-            Center(
-              child: Text(
-
-                number.toString().padLeft(3, '0'),
-
-                style: TextStyle(
+                  size: 16,
 
                   color: obtained
                       ? Colors.white
-                      : Colors.white70,
-
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                      : Colors.grey,
                 ),
               ),
-            ),
 
-          ],
+              Center(
+
+                child: Text(
+
+                  number
+                      .toString()
+                      .padLeft(3, '0'),
+
+                  style: TextStyle(
+
+                    color: obtained
+                        ? Colors.white
+                        : AppColors.textPrimary(
+                            context),
+
+                    fontWeight:
+                        FontWeight.bold,
+
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

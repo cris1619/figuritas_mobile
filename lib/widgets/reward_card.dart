@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_colors.dart';
 
 class RewardCard extends StatelessWidget {
-
   final String title;
   final int obtained;
   final int total;
@@ -15,44 +15,32 @@ class RewardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final progress = obtained / total;
 
     final completed = obtained == total;
 
     return Card(
-
       child: Padding(
-
         padding: const EdgeInsets.all(20),
 
         child: Column(
-
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-
             Row(
-
               children: [
-
                 Icon(
-
-                  completed
-                      ? Icons.emoji_events
-                      : Icons.lock_open,
+                  completed ? Icons.emoji_events : Icons.lock_open,
 
                   color: completed
                       ? Colors.amber
-                      : Colors.white70,
+                      : AppColors.iconColor(context),
                 ),
 
                 const SizedBox(width: 10),
 
                 Expanded(
-
                   child: Text(
-
                     title,
 
                     style: const TextStyle(
@@ -67,22 +55,16 @@ class RewardCard extends StatelessWidget {
             const SizedBox(height: 20),
 
             ClipRRect(
-
               borderRadius: BorderRadius.circular(20),
 
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 14,
-              ),
+              child: LinearProgressIndicator(value: progress, minHeight: 14),
             ),
 
             const SizedBox(height: 10),
 
             Text(
               "$obtained / $total figuritas",
-              style: const TextStyle(
-                color: Colors.white70,
-              ),
+              style: TextStyle(color: AppColors.textSecondary(context)),
             ),
 
             const SizedBox(height: 6),
@@ -90,13 +72,11 @@ class RewardCard extends StatelessWidget {
             Text(
               "${(progress * 100).toStringAsFixed(1)}% completado",
               style: TextStyle(
-                color: completed
-                    ? Colors.amber
-                    : Colors.greenAccent,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary(context),
               ),
             ),
-
           ],
         ),
       ),

@@ -2,14 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/sticker_provider.dart';
+import '../../utils/filter_type.dart';
 import '../../widgets/sticker_card.dart';
+import '../../core/responsive/responsive.dart';
+import '../../core/theme/app_colors.dart';
 
-class StickersScreen extends ConsumerWidget {
+class StickersScreen extends ConsumerStatefulWidget {
 
   const StickersScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StickersScreen> createState() =>
+      _StickersScreenState();
+}
+
+class _StickersScreenState
+    extends ConsumerState<StickersScreen> {
+
+  String search = '';
+
+  FilterType filter = FilterType.all;
+
+  @override
+  Widget build(BuildContext context) {
 
     final stickers = ref.watch(stickerProvider);
 
@@ -21,7 +36,29 @@ class StickersScreen extends ConsumerWidget {
       );
     }
 
-    final obtained = stickers.where((s) => s.obtained).length;
+    var filtered = stickers.where((sticker) {
+
+      final matchesSearch = sticker.number
+          .toString()
+          .contains(search);
+
+      final matchesFilter = switch (filter) {
+
+        FilterType.all => true,
+
+        FilterType.obtained =>
+            sticker.obtained,
+
+        FilterType.missing =>
+            !sticker.obtained,
+      };
+
+      return matchesSearch && matchesFilter;
+
+    }).toList();
+
+    final obtained =
+        stickers.where((s) => s.obtained).length;
 
     final progress = obtained / 387;
 
@@ -36,9 +73,7 @@ class StickersScreen extends ConsumerWidget {
           IconButton(
 
             onPressed: () {
-
-              _showResetDialog(context, ref);
-
+              _showResetDialog(context);
             },
 
             icon: const Icon(Icons.restart_alt),
@@ -52,27 +87,31 @@ class StickersScreen extends ConsumerWidget {
         children: [
 
           Padding(
-            padding: const EdgeInsets.all(16),
+
+            padding: EdgeInsets.all(Responsive.padding(context)),
 
             child: Column(
 
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
 
               children: [
 
                 Text(
                   "$obtained / 387 Figuritas",
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary(context),
+                ),
                 ),
 
                 const SizedBox(height: 10),
 
                 ClipRRect(
 
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius:
+                      BorderRadius.circular(20),
 
                   child: LinearProgressIndicator(
                     value: progress,
@@ -80,13 +119,70 @@ class StickersScreen extends ConsumerWidget {
                   ),
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
 
-                Text(
-                  "${(progress * 100).toStringAsFixed(1)}% completado",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white70,
+                TextField(
+
+                  onChanged: (value) {
+
+                    setState(() {
+                      search = value;
+                    });
+
+                  },
+
+                  keyboardType: TextInputType.number,
+
+                  decoration: InputDecoration(
+
+                    hintStyle: TextStyle(
+                      color: AppColors.textMuted(context),
+                    ),  
+
+                    hintText:
+                        'Buscar figurita...',
+
+                    prefixIcon:
+                        const Icon(Icons.search),
+
+                    filled: true,
+
+                    border: OutlineInputBorder(
+
+                      borderRadius:
+                          BorderRadius.circular(16),
+
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                SingleChildScrollView(
+
+                  scrollDirection: Axis.horizontal,
+
+                  child: Row(
+
+                    children: [
+
+                      _buildFilterChip(
+                        label: 'Todas',
+                        value: FilterType.all,
+                      ),
+
+                      _buildFilterChip(
+                        label: 'Obtenidas',
+                        value: FilterType.obtained,
+                      ),
+
+                      _buildFilterChip(
+                        label: 'Faltantes',
+                        value: FilterType.missing,
+                      ),
+
+                    ],
                   ),
                 ),
 
@@ -97,16 +193,23 @@ class StickersScreen extends ConsumerWidget {
           Expanded(
 
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+
+              padding:
+                  const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
 
               child: GridView.builder(
+                
+                cacheExtent: 500,
 
-                itemCount: stickers.length,
+                itemCount: filtered.length,
 
                 gridDelegate:
                     SliverGridDelegateWithFixedCrossAxisCount(
 
-                  crossAxisCount: _getCrossAxisCount(context),
+                  crossAxisCount:
+                      Responsive.gridCount(context),
 
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
@@ -116,18 +219,21 @@ class StickersScreen extends ConsumerWidget {
 
                 itemBuilder: (context, index) {
 
-                  final sticker = stickers[index];
+                  final sticker = filtered[index];
 
                   return StickerCard(
 
                     number: sticker.number,
+
                     obtained: sticker.obtained,
 
                     onTap: () {
 
                       ref
-                          .read(stickerProvider.notifier)
-                          .toggleSticker(sticker.number);
+                          .read(
+                              stickerProvider.notifier)
+                          .toggleSticker(
+                              sticker.number);
 
                     },
                   );
@@ -140,10 +246,35 @@ class StickersScreen extends ConsumerWidget {
     );
   }
 
-  void _showResetDialog(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  Widget _buildFilterChip({
+    required String label,
+    required FilterType value,
+  }) {
+
+    final selected = filter == value;
+
+    return Padding(
+
+      padding: const EdgeInsets.only(right: 10),
+
+      child: ChoiceChip(
+
+        label: Text(label),
+
+        selected: selected,
+
+        onSelected: (_) {
+
+          setState(() {
+            filter = value;
+          });
+
+        },
+      ),
+    );
+  }
+
+  void _showResetDialog(BuildContext context) {
 
     showDialog(
 
@@ -153,10 +284,11 @@ class StickersScreen extends ConsumerWidget {
 
         return AlertDialog(
 
-          title: const Text("Reiniciar álbum"),
+          title:
+              const Text("Reiniciar álbum"),
 
           content: const Text(
-            "¿Seguro que deseas borrar todo el progreso?"
+            "¿Seguro que deseas borrar el progreso?"
           ),
 
           actions: [
@@ -189,20 +321,5 @@ class StickersScreen extends ConsumerWidget {
         );
       },
     );
-  }
-
-  int _getCrossAxisCount(BuildContext context) {
-
-    final width = MediaQuery.of(context).size.width;
-
-    if (width < 500) {
-      return 4;
-    } else if (width < 800) {
-      return 6;
-    } else if (width < 1200) {
-      return 8;
-    } else {
-      return 10;
-    }
   }
 }
