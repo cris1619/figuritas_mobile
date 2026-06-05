@@ -42,6 +42,7 @@ dependencies:
   firebase_auth: ^6.5.2
   cloud_firestore: ^6.5.0
   google_sign_in: 6.2.1
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -95,3 +96,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_launcher_icons:
+
+  android: true
+
+  ios: true
+
+  image_path: "assets/logo.png"
+
+  adaptive_icon_background: "#0F172A"
+
+  adaptive_icon_foreground: "assets/logo.png"
