@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "512917049152",
+    "project_id": "figuritasapp-47f0a",
+    "storage_bucket": "figuritasapp-47f0a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512917049152:android:226fbe3b4868d63e06b4a5",
+        "android_client_info": {
+          "package_name": "com.example.album_mundial_vc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "512917049152-6ra66qhm2jj73pf8sqssspps982jss64.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.album_mundial_vc",
+            "certificate_hash": "4dd9213c959504e48dcbe0fe6cc23a48cb224c1f"
+          }
+        },
+        {
+          "client_id": "512917049152-j9eobq2qq6h6k0ja9us9c2o8fbunfp4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABRNXF_4biEasOubWSU_Jy7kINesxbLP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "512917049152-j9eobq2qq6h6k0ja9us9c2o8fbunfp4j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "512917049152-14qjmjr6kifmbbg1flugogj6rkueakf7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.albumMundialVc"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

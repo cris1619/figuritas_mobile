@@ -5,6 +5,7 @@ import '../screens/rewards/rewards_screen.dart';
 import '../screens/stats/stats_screen.dart';
 import '../screens/stickers/stickers_screen.dart';
 import '../core/responsive/responsive.dart';
+import '../screens/profile/profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -18,11 +19,17 @@ class _MainNavigationState extends State<MainNavigation> {
   int currentIndex = 0;
 
   final List<Widget> pages = [
-    const DashboardScreen(),
-    const StickersScreen(),
-    const RewardsScreen(),
-    const StatsScreen(),
-  ];
+
+  const DashboardScreen(),
+
+  const StickersScreen(),
+
+  const RewardsScreen(),
+
+  const StatsScreen(),
+
+  const ProfileScreen(),
+];
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +87,16 @@ class _MainNavigationState extends State<MainNavigation> {
                       Icon(Icons.bar_chart),
                   label: 'Stats',
                 ),
+                NavigationDestination(
+
+                icon:
+                    Icon(Icons.person_outline),
+
+                selectedIcon:
+                    Icon(Icons.person),
+
+                label: 'Perfil',
+              ),
               ],
             ),
 
@@ -95,7 +112,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
                   const DrawerHeader(
                     child: Text(
-                      "Álbum Mundial ⚽",
+                      "FIGURITAS_APP ⚽",
                     ),
                   ),
 
@@ -122,13 +139,18 @@ class _MainNavigationState extends State<MainNavigation> {
                     index: 3,
                     label: "Stats",
                   ),
+                  _buildDrawerItem(
+                    icon: Icons.person,
+                    index: 4,
+                    label: "Perfil",
+                  ),
 
-                ],
-              ),
-            )
+                                  ],
+                                ),
+                              )
 
-          : null,
-);
+                            : null,
+                  );
   }
   Widget _buildDrawerItem({
   required IconData icon,

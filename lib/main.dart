@@ -1,32 +1,28 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
+import 'firebase_options.dart';
 import 'providers/theme_provider.dart';
-import 'widgets/main_navigation.dart';
+import 'screens/auth/login_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-    const ProviderScope(
-      child: AlbumMundialApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: FiguritasApp()));
 }
 
-class AlbumMundialApp extends ConsumerWidget {
-
-  const AlbumMundialApp({super.key});
+class FiguritasApp extends ConsumerWidget {
+  const FiguritasApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final themeMode =
-        ref.watch(themeProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
 
       title: 'FIGURITAS_APP',
@@ -37,7 +33,7 @@ class AlbumMundialApp extends ConsumerWidget {
 
       themeMode: themeMode,
 
-      home: const MainNavigation(),
+      home: const LoginScreen(),
     );
   }
 }
