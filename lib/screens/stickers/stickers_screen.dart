@@ -23,6 +23,10 @@ class _StickersScreenState
 
   FilterType filter = FilterType.all;
 
+  int currentPage = 1;
+
+  final int itemsPerPage = 40;  
+
   @override
   Widget build(BuildContext context) {
 
@@ -56,6 +60,20 @@ class _StickersScreenState
       return matchesSearch && matchesFilter;
 
     }).toList();
+
+    final totalPages =
+    (filtered.length / itemsPerPage)
+        .ceil();
+
+    final start =
+        (currentPage - 1) * itemsPerPage;
+
+    final end =
+        (start + itemsPerPage)
+            .clamp(0, filtered.length);
+
+    final paginated =
+        filtered.sublist(start, end);
 
     final obtained =
         stickers.where((s) => s.obtained).length;
@@ -126,7 +144,10 @@ class _StickersScreenState
                   onChanged: (value) {
 
                     setState(() {
+
                       search = value;
+
+                      currentPage = 1;
                     });
 
                   },
@@ -203,7 +224,7 @@ class _StickersScreenState
                 
                 cacheExtent: 500,
 
-                itemCount: filtered.length,
+                itemCount: paginated.length,
 
                 gridDelegate:
                     SliverGridDelegateWithFixedCrossAxisCount(
@@ -219,7 +240,7 @@ class _StickersScreenState
 
                 itemBuilder: (context, index) {
 
-                  final sticker = filtered[index];
+                  final sticker = paginated[index];
 
                   return StickerCard(
 
@@ -241,6 +262,74 @@ class _StickersScreenState
               ),
             ),
           ),
+          Padding(
+
+              padding: const EdgeInsets.all(16),
+
+              child: Row(
+
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
+
+                children: [
+
+                  ElevatedButton(
+
+                    onPressed:
+
+                        currentPage > 1
+
+                            ? () {
+
+                                setState(() {
+                                  currentPage--;
+                                });
+
+                              }
+
+                            : null,
+
+                    child: const Text("Anterior"),
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  Text(
+
+                    "$currentPage / $totalPages",
+
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color:
+                          AppColors.textPrimary(
+                              context),
+                    ),
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  ElevatedButton(
+
+                    onPressed:
+
+                        currentPage < totalPages
+
+                            ? () {
+
+                                setState(() {
+                                  currentPage++;
+                                });
+
+                              }
+
+                            : null,
+
+                    child: const Text("Siguiente"),
+                  ),
+
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -266,7 +355,10 @@ class _StickersScreenState
         onSelected: (_) {
 
           setState(() {
+
             filter = value;
+
+            currentPage = 1;
           });
 
         },
