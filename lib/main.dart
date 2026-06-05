@@ -29,7 +29,7 @@ class AlbumMundialApp extends ConsumerWidget {
 
       debugShowCheckedModeBanner: false,
 
-      title: 'Álbum Mundial',
+      title: 'FIGURITAS_APP',
 
       theme: AppTheme.lightTheme,
 

@@ -140,6 +140,260 @@ class StatsScreen extends ConsumerWidget {
               icon: Icons.bar_chart,
               color: Colors.blue,
             ),
+            const SizedBox(height: 30),
+
+            Text(
+
+              "Progreso por Premios",
+
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary(context),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ...rewards.map((reward) {
+
+              final rewardStickers =
+                  stickers.where((sticker) {
+
+                return sticker.number >= reward.start &&
+                    sticker.number <= reward.end;
+
+              }).toList();
+
+              final obtainedCount =
+                  rewardStickers
+                      .where((s) => s.obtained)
+                      .length;
+
+              final total =
+                  reward.end - reward.start + 1;
+
+              final progress =
+                  obtainedCount / total;
+
+              return Padding(
+
+                padding: const EdgeInsets.only(bottom: 16),
+
+                child: Card(
+
+                  child: Padding(
+
+                    padding: const EdgeInsets.all(18),
+
+                    child: Column(
+
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+
+                      children: [
+
+                        Row(
+
+                          children: [
+
+                            Expanded(
+
+                              child: Text(
+
+                                reward.name,
+
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight:
+                                      FontWeight.bold,
+                                  color:
+                                      AppColors
+                                          .textPrimary(
+                                              context),
+                                ),
+                              ),
+                            ),
+
+                            Text(
+
+                              "$obtainedCount/$total",
+
+                              style: TextStyle(
+                                color:
+                                    AppColors
+                                        .textSecondary(
+                                            context),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 14),
+
+                        ClipRRect(
+
+                          borderRadius:
+                              BorderRadius.circular(20),
+
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 12,
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Text(
+
+                          "${(progress * 100).toStringAsFixed(1)}% completado",
+
+                          style: TextStyle(
+                            color:
+                                AppColors.textMuted(
+                                    context),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
+            const SizedBox(height: 30),
+
+            Builder(
+
+              builder: (_) {
+
+                String nearestReward = '';
+
+                double bestProgress = 0;
+
+                for (final reward in rewards) {
+
+                  final rewardStickers =
+                      stickers.where((sticker) {
+
+                    return sticker.number >= reward.start &&
+                        sticker.number <= reward.end;
+
+                  }).toList();
+
+                  final obtainedCount =
+                      rewardStickers
+                          .where((s) => s.obtained)
+                          .length;
+
+                  final total =
+                      reward.end - reward.start + 1;
+
+                  final progress =
+                      obtainedCount / total;
+
+                  if (progress > bestProgress &&
+                      progress < 1) {
+
+                    bestProgress = progress;
+
+                    nearestReward = reward.name;
+                  }
+                }
+
+                return Card(
+
+                  child: Padding(
+
+                    padding: const EdgeInsets.all(20),
+
+                    child: Row(
+
+                      children: [
+
+                        const Icon(
+                          Icons.local_fire_department,
+                          color: Colors.orange,
+                          size: 40,
+                        ),
+
+                        const SizedBox(width: 20),
+
+                        Expanded(
+
+                          child: Column(
+
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+
+                            children: [
+
+                              Text(
+
+                                "Premio más cercano",
+
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color:
+                                      AppColors
+                                          .textSecondary(
+                                              context),
+                                ),
+                              ),
+
+                              const SizedBox(height: 6),
+
+                              Text(
+
+                                completedRewards == rewards.length
+                              ? "Todos completados 🔥"
+                              : nearestReward.isEmpty
+                                  ? "Sin progreso aún"
+                                  : nearestReward,
+
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight:
+                                      FontWeight.bold,
+                                  color:
+                                      AppColors
+                                          .textPrimary(
+                                              context),
+                                ),
+                              ),
+
+                              const SizedBox(height: 6),
+
+                              Text(
+
+                                completedRewards == rewards.length
+
+                                ? "Álbum finalizado"
+
+                                : nearestReward.isEmpty
+
+                                    ? "Empieza a coleccionar figuritas"
+
+                                    : "${(bestProgress * 100).toStringAsFixed(1)}% completado",
+
+                                style: TextStyle(
+                                  color:
+                                      AppColors
+                                          .textMuted(
+                                              context),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -162,7 +416,7 @@ class StatsScreen extends ConsumerWidget {
             CircleAvatar(
               radius: 28,
 
-              backgroundColor: color.withOpacity(0.2),
+              backgroundColor: color.withAlpha((0.2 * 255).round()),
 
               child: Icon(icon, color: color, size: 28),
             ),
