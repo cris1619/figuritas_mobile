@@ -1,4 +1,4 @@
-package com.example.album_mundial_vc
+package com.cristiansolano.figuritasapp
 
 import io.flutter.embedding.android.FlutterActivity
 
